@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Data-binding Test</title>
+    <link rel="stylesheet" href="css/bundle.css"/>
+</head>
+<body class="container-fluid">
+
+<h1>Data-binding Test</h1>
+<br/>
+<section id="duration" class="form-horizontal">
+    <div class="form-group">
+        <label for="durationInput" class="col-sm-2 control-label">Duration</label>
+        <div class="col-sm-2">
+            <input type="number" id="durationInput" name="durationInput" class="form-control" value="5" placeholder="duration"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="numberOfColumnInput" class="col-sm-2 control-label">Number of column</label>
+        <div class="col-sm-2">
+            <input type="number" id="numberOfColumnInput" name="numberOfColumnInput" class="form-control" value="80" placeholder="number of column"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="numberOfRowInput" class="col-sm-2 control-label">Number of Row</label>
+        <div class="col-sm-2">
+            <input type="number" id="numberOfRowInput" name="numberOfRowInput" class="form-control" value="50" placeholder="number of row"/>
+        </div>
+    </div>
+</section>
+<br/>
+<section id="knockout" class="panel panel-default">
+    <div class="panel-heading">
+        <h3>KnockoutJS</h3>
+
+        <div id="koButtons">
+            <button class="btn btn-default" data-bind="click: load">Load</button>
+            <button class="btn btn-default" data-bind="click: triggerAll">Trigger All</button>
+            <button class="btn btn-default" data-bind="click: clear">Clear</button>
+        </div>
+    </div>
+    <div class="panel-body" data-bind="visible: horizontal().length != 0">
+        <table class="table table-bordered table-condensed">
+            <thead>
+            <tr>
+                <th>#</th>
+                <!-- ko foreach: vertical -->
+                <th data-bind="text: $index() + 1"></th>
+                <!-- /ko -->
+            </tr>
+            </thead>
+            <tbody>
+            <!-- ko foreach: horizontal -->
+            <tr>
+                <th data-bind="text: $index() + 1"></th>
+                <!-- ko foreach: row -->
+                <td data-bind="attr: {bgcolor: isTriggered() ? 'CCFFFF' : ''}">
+                    <a href="#" data-bind="text: text, click: trigger"></a>
+                </td>
+                <!-- /ko -->
+            </tr>
+            <!-- /ko -->
+            </tbody>
+        </table>
+    </div>
+</section>
+<section id="rivet" class="panel panel-default">
+    <div class="panel-heading">
+        <h3>RivetJS</h3>
+
+        <div id="rivetButtons">
+            <button class="btn btn-default" rv-on-click="load">Load</button>
+            <button class="btn btn-default" rv-on-click="triggerAll">Trigger All</button>
+            <button class="btn btn-default" rv-on-click="clear" >Clear</button>
+        </div>
+    </div>
+    <div class="panel-body" rv-show="isLoaded">
+        <table class="table table-bordered table-condensed">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th rv-each-item="vertical" rv-text="item"></th>
+            </tr>
+            </thead>
+            <tbody rv-each-row="horizontal">
+            <tr>
+                <th rv-text="row.index"></th>
+                <td rv-each-cell="row.row" rv-bgcolor="cell.bgcolor">
+                    <a href="/#" rv-text="cell.text" rv-on-click="cell.trigger"></a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+<section id="angular" class="panel panel-default" ng-controller="mainController">
+    <div class="panel-heading">
+        <h3>AngularJS</h3>
+
+        <div>
+            <button class="btn btn-default" ng-click="load()">Load</button>
+            <button class="btn btn-default" ng-click="triggerAll()">Trigger All</button>
+            <button class="btn btn-default" ng-click="clear()" >Clear</button>
+        </div>
+    </div>
+    <div class="panel-body" ng-show="horizontal.length > 0">
+        <table class="table table-bordered table-condensed">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th ng-repeat="item in vertical">{{ item + 1 }}</th>
+            </tr>
+            </thead>
+            <tbody ng-repeat="row in horizontal">
+            <tr>
+                <th>{{ $index + 1 }}</th>
+                <td ng-repeat="cell in row.row" ng-bg-color="cell.isTriggered">
+                    <a href="/#" ng-click="cell.trigger()">{{ cell.text() }}</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+<section id="react" class="panel panel-default">
+    <!--react-->
+</section>
+<script src="scripts/bundle.js"></script>
+</body>
+</html>
