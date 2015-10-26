@@ -78,4 +78,4 @@ var cellViewModel = function ($scope) {
             $scope.$apply();
         }, cell.generateRandomTimeout());
     }
-};;
+};
