@@ -5,13 +5,13 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 
 var Main = React.createClass({
-    getInitialState: function(){
+    getInitialState: function () {
         return {
             horizontal: [],
             vertical: []
         }
     },
-    load: function(){
+    load: function () {
         this.setState({
             horizontal: [],
             vertical: []
@@ -39,14 +39,10 @@ var Main = React.createClass({
             vertical: vertical
         });
     },
-    triggerAll: function(){
-        this.state.horizontal.forEach(function(row) {
-            row.row.forEach(function (cell) {
-                cell.trigger();
-            })
-        })
+    triggerAll: function () {
+
     },
-    clear: function(){
+    clear: function () {
         this.setState({
             horizontal: [],
             vertical: []
@@ -70,34 +66,10 @@ var Main = React.createClass({
 });
 
 var Body = React.createClass({
-    render: function(){
-        var getCells = function(row){
-            var cells = [];
-            row.row.map(function(cell, index){
-                cells.push(
-                    <th key={index}>
-                        <a href="/#" onClick={cell.trigger}>{cell.text()}</a>
-                    </th>
-                )
-            });
-
-            return cells;
-        };
-
+    render: function () {
         var ths = [];
-        for (var i=0;i<this.props.vertical.length;i++){
-            ths.push(<th key={i}>{i+1}</th>)
-        }
-
-        var rows = [];
-        for (var j=0;j<this.props.horizontal.length;j++){
-            var row = this.props.horizontal[j];
-            rows.push(
-                <tr key={j}>
-                    <th>{j+1}</th>
-                    {getCells(row)}
-                </tr>
-            )
+        for (var i = 0; i < this.props.vertical.length; i++) {
+            ths.push(<th key={i}>{i + 1}</th>)
         }
 
         return (
@@ -109,12 +81,71 @@ var Body = React.createClass({
                             {ths}
                         </tr>
                     </thead>
-                    <tbody>
-                        {rows}
-                    </tbody>
+                    <Rows horizontal={this.props.horizontal} />
                 </table>
             </div>
         )
+    }
+});
+
+var Rows = React.createClass({
+    render: function () {
+        var getCells = function (row) {
+            var cells = [];
+            row.row.map(function (cell, index) {
+                cells.push(
+                    <Cell key={index} cell={cell}/>
+                )
+            });
+
+            return cells;
+        };
+
+        var rows = [];
+        for (var j = 0; j < this.props.horizontal.length; j++) {
+            var row = this.props.horizontal[j];
+            rows.push(
+                <tr key={j}>
+                    <th>{j + 1}</th>
+                    {getCells(row)}
+                </tr>
+            )
+        }
+
+        return (
+            <tbody>
+                {rows}
+            </tbody>
+        );
+    }
+});
+
+var Cell = React.createClass({
+    getInitialState: function(){
+        return {
+            cell: this.props.cell
+        }
+    },
+    trigger: function(){
+        var self = this;
+
+        setTimeout(function () {
+            var cell = self.state.cell;
+            cell.isTriggered = true;
+            self.setState({
+                cell: cell
+            });
+        }, cell.generateRandomTimeout());
+    },
+    componentDidUpdate: function(instance) {
+        this.getDOMNode().setAttribute('bgcolor', this.state.cell.bgcolor());
+    },
+    render: function () {
+        return (
+            <th bgcolor={this.state.cell.bgcolor()}>
+                <a href="/#" onClick={this.trigger} className="react-cell">{this.state.cell.text()}</a>
+            </th>
+        );
     }
 });
 
@@ -133,10 +164,7 @@ var cellViewModel = function (ctx) {
         return self.isTriggered ? "1" : "0";
     };
 
-    self.trigger = function () {
-        setTimeout(function () {
-            self.isTriggered = true;
-            ctx.forceUpdate();
-        }, cell.generateRandomTimeout());
+    self.bgcolor = function(){
+        return self.isTriggered ? "CCCCFF" : "FFFFFF";
     }
 };
