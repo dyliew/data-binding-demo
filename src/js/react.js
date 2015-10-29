@@ -8,13 +8,15 @@ var Main = React.createClass({
     getInitialState: function () {
         return {
             horizontal: [],
-            vertical: []
+            vertical: [],
+            loaded: false
         }
     },
     load: function () {
         this.setState({
             horizontal: [],
-            vertical: []
+            vertical: [],
+            loaded: false
         });
 
         var horizontal = this.state.horizontal;
@@ -40,12 +42,15 @@ var Main = React.createClass({
         });
     },
     triggerAll: function () {
-
+        this.setState({
+            loaded: true
+        })
     },
     clear: function () {
         this.setState({
             horizontal: [],
-            vertical: []
+            vertical: [],
+            loaded: false
         });
     },
     render: function () {
@@ -59,7 +64,9 @@ var Main = React.createClass({
                         <button className="btn btn-default" onClick={this.clear}>Clear</button>
                     </div>
                 </div>
-                { this.state.horizontal.length == 0 ? null : <Body horizontal={this.state.horizontal} vertical={this.state.vertical}/> }
+                { this.state.horizontal.length == 0 ? null :
+                    <Body horizontal={this.state.horizontal} vertical={this.state.vertical} loaded={this.state.loaded}/>
+                }
             </div>
         )
     }
@@ -81,7 +88,7 @@ var Body = React.createClass({
                             {ths}
                         </tr>
                     </thead>
-                    <Rows horizontal={this.props.horizontal} />
+                    <Rows horizontal={this.props.horizontal} loaded={this.props.loaded}/>
                 </table>
             </div>
         )
@@ -90,11 +97,13 @@ var Body = React.createClass({
 
 var Rows = React.createClass({
     render: function () {
+        var self = this;
+
         var getCells = function (row) {
             var cells = [];
             row.row.map(function (cell, index) {
                 cells.push(
-                    <Cell key={index} cell={cell}/>
+                    <Cell key={index} cell={cell} loaded={self.props.loaded}/>
                 )
             });
 
@@ -137,14 +146,22 @@ var Cell = React.createClass({
             });
         }, cell.generateRandomTimeout());
     },
-    componentDidUpdate: function(instance) {
-        this.getDOMNode().setAttribute('bgcolor', this.state.cell.bgcolor());
+    componentWillReceiveProps: function(nextProps) {
+        var self = this;
+
+        setTimeout(function () {
+            var cell = self.state.cell;
+            cell.isTriggered = nextProps.loaded;
+            self.setState({
+                cell: cell
+            });
+        }, cell.generateRandomTimeout());
     },
     render: function () {
         return (
-            <th bgcolor={this.state.cell.bgcolor()}>
-                <a href="/#" onClick={this.trigger} className="react-cell">{this.state.cell.text()}</a>
-            </th>
+            <td className={this.state.cell.getClassName()}>
+                <a href="/#" onClick={this.trigger}>{this.state.cell.text()}</a>
+            </td>
         );
     }
 });
@@ -155,7 +172,7 @@ var rowViewModel = function () {
     this.row = [];
 };
 
-var cellViewModel = function (ctx) {
+var cellViewModel = function () {
     var self = this;
 
     self.isTriggered = false;
@@ -164,7 +181,7 @@ var cellViewModel = function (ctx) {
         return self.isTriggered ? "1" : "0";
     };
 
-    self.bgcolor = function(){
-        return self.isTriggered ? "CCCCFF" : "FFFFFF";
-    }
+    self.getClassName = function(){
+        return self.isTriggered ? "reactCellTriggered" : "";
+    };
 };
