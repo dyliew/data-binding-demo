@@ -91,8 +91,8 @@
             <tbody rv-each-row="horizontal">
             <tr>
                 <th rv-text="row.index"></th>
-                <td rv-each-cell="row.row" rv-bgcolor="cell.bgcolor">
-                    <a href="/#" rv-text="cell.text" rv-on-click="cell.trigger"></a>
+                <td rv-each-cell="row.row" rv-bgcolor="cell.getBgColor < isTriggered">
+                    <a href="/#" rv-text="cell.getText < isTriggered" rv-on-click="cell.trigger"></a>
                 </td>
             </tr>
             </tbody>

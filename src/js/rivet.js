@@ -55,17 +55,21 @@ var rowViewModel = function () {
 var cellViewModel = function () {
     var self = this;
 
-    self.text = "0";
-    self.bgcolor = "FFFFFF";
     self.isTriggered = false;
+
+    self.getText = function(){
+        return self.isTriggered ? "1" : "0";
+    };
+
+    self.getBgColor = function(){
+        return self.isTriggered ? "CCFFFF" : "FFFFFF";
+    };
 
     self.trigger = function () {
         setTimeout(function () {
             self.isTriggered  = true;
-            self.text = "1";
-            self.bgcolor = "CCFFFF";
         }, cell.generateRandomTimeout());
-    }
+    };
 };
 
-rivets.bind(document.getElementById('rivet'), new rivetViewModel())
+rivets.bind(document.getElementById('rivet'), new rivetViewModel());
