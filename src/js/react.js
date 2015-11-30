@@ -19,8 +19,8 @@ var Main = React.createClass({
             loaded: false
         });
 
-        var horizontal = this.state.horizontal;
-        var vertical = this.state.vertical;
+        var horizontal = [];
+        var vertical = [];
 
         for (var i = 0; i < config.dimension.y(); i++) {
             var row = new rowViewModel();
@@ -64,7 +64,7 @@ var Main = React.createClass({
                         <button className="btn btn-default" onClick={this.clear}>Clear</button>
                     </div>
                 </div>
-                { this.state.horizontal.length == 0 ? null :
+                { (this.state.horizontal.length == 0 && this.state.vertical.length == 0) ? null :
                     <Body horizontal={this.state.horizontal} vertical={this.state.vertical} loaded={this.state.loaded}/>
                 }
             </div>
